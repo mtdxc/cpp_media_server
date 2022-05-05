@@ -10,20 +10,18 @@
 #include <string>
 #include <stdint.h>
 #include <stddef.h>
-#include <cstring>
 #ifdef _WIN32
 #include <WS2tcpip.h>
 #endif
 
 inline std::string get_ip_str(const struct sockaddr *sa, uint16_t& port) {
     const socklen_t maxlen = 64;
-    char s[maxlen];
+    char s[maxlen] = {0};
 
     if (!sa) {
         return "";
     }
     
-    std::memset(s, 0, maxlen);
     switch(sa->sa_family) {
         case AF_INET:
             inet_ntop(AF_INET, &(((struct sockaddr_in *)sa)->sin_addr),
