@@ -5,7 +5,9 @@
 #include "logger.hpp"
 #include "utils/byte_stream.hpp"
 #include "format/flv/flv_demux.hpp"
+#ifdef ENABLE_FFMPEG
 #include "transcode/transcode.hpp"
+#endif
 #include "net/websocket/ws_session.hpp"
 #include <sstream>
 #include <assert.h>
@@ -26,17 +28,20 @@ av_outputer::~av_outputer()
 }
 
 void av_outputer::release() {
+#ifdef ENABLE_FFMPEG
     if (trans_) {
         trans_->stop();
         delete trans_;
         trans_ = nullptr;
     }
+#endif
 }
 
 int av_outputer::output_packet(MEDIA_PACKET_PTR pkt_ptr) {
     int ret = 0;
 
     if ((pkt_ptr->av_type_ == MEDIA_AUDIO_TYPE) && (pkt_ptr->codec_type_ == MEDIA_CODEC_OPUS)) {
+#ifdef ENABLE_FFMPEG
         if (trans_ == nullptr) {
             trans_ = new transcode();
             trans_->set_output_audio_fmt("libfdk_aac");
@@ -62,6 +67,7 @@ int av_outputer::output_packet(MEDIA_PACKET_PTR pkt_ptr) {
             ret_pkt_ptr->streamname_ = pkt_ptr->streamname_;
             ret = media_stream_manager::writer_media_packet(ret_pkt_ptr);
         }
+#endif
     } else {
         ret = flv_muxer::add_flv_media_header(pkt_ptr);
         if (ret < 0) {

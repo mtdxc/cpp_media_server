@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.7.1)
+ï»¿cmake_minimum_required(VERSION 3.7.1)
 project(cpp_media_server)
 project(cpp_media_server VERSION 1.1)
 set(CMAKE_CXX_STANDARD 17)
@@ -50,8 +50,8 @@ IF (WIN32)
         set(LIBS ssl crypto)
     endif()
     if (ENABLE_FFMPEG)
-		# ¸ù¾İÊµ¼ÊÇé¿ö£¬ĞŞ¸ÄffmpegµÄ°²×°Â·¾¶£¬×¢Òâ´óÓÚ4.4µÄ°æ±¾²»ĞĞ
-        SET(FFMPEG_ROOT_DIR D:/Work/ffmpeg/v4.3)
+		# æ ¹æ®å®é™…æƒ…å†µï¼Œä¿®æ”¹ffmpegçš„å®‰è£…è·¯å¾„ï¼Œæ³¨æ„å¤§äº4.4çš„ç‰ˆæœ¬ä¸è¡Œ
+        SET(FFMPEG_ROOT_DIR E:/Work/ffmpeg/v4.3)
         message(STATUS "found ffmpeg:${FFMPEG_ROOT_DIR}")
         add_definitions(-DENABLE_FFMPEG)
         include_directories(${FFMPEG_ROOT_DIR}/include)
@@ -380,7 +380,9 @@ SET(SRC_LIST src/media_server.cpp
     src/utils/av/media_stream_manager.hpp
     src/utils/av/gop_cache.cpp
     src/utils/av/gop_cache.hpp)
-
+IF(WIN32)
+    list(APPEND SRC_LIST src/windows/getopt.c)
+ENDIF()
 IF(ENABLE_FFMPEG)
     aux_source_directory(src/transcode SRC_LIST)
 ENDIF()
