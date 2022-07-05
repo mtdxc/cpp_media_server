@@ -1,11 +1,19 @@
 include(ExternalProject)
 
+add_subdirectory(libsdptransform)
+add_subdirectory(libuv)
+set(ENABLE_OPENSSL ON)
+set(TEST_APPS OFF CACHE INTERNAL "")
+add_subdirectory(libsrtp)
+unset(TEST_APPS)
+
+IF (WIN32)
+    return()
+ENDIF()
+
 set(EXTRA_CFLAGS "-I${PREFIX_DIR}/include")
 set(EXTRA_LDFLAGS "-L${PREFIX_DIR}/lib")
 set(EXTRA_LIBS "-lm -pthread -ldl")
-
-add_subdirectory(libsdptransform)
-add_subdirectory(libuv)
 
 ExternalProject_Add(yasm
     URL ${CMAKE_CURRENT_SOURCE_DIR}/yasm-1.3.0.tar.gz
@@ -40,17 +48,6 @@ ExternalProject_Add(openssl
     INSTALL_COMMAND make install_sw
     )
 ENDIF ()
-
-ExternalProject_Add(libsrtp
-    DEPENDS openssl
-    URL ${CMAKE_CURRENT_SOURCE_DIR}/libsrtp.tar.gz
-    SOURCE_DIR  ${CMAKE_CURRENT_BINARY_DIR}/libsrtp
-    BUILD_IN_SOURCE 1
-    CONFIGURE_COMMAND
-        ./configure --prefix=${PREFIX_DIR} --libdir=${INSTALL_RPATH} --enable-openssl --with-openssl-dir=${INSTALL_RPATH}/..
-    BUILD_COMMAND make
-    INSTALL_COMMAND make install
-    )
 
 #opus-1.3.1.tar.gz
 ExternalProject_Add(libopus
