@@ -2,13 +2,8 @@
 #define RTCP_PS_PLI_HPP
 #include "rtprtcp_pub.hpp"
 #include "rtcp_fb_pub.hpp"
-#include "logger.hpp"
 #include "byte_stream.hpp"
-#include "stringex.hpp"
-#include <stdint.h>
-#include <stddef.h>
 #include <string>
-#include <cstring>
 #ifndef _WIN32
 #include <arpa/inet.h>
 #else
@@ -58,7 +53,6 @@ public:
 
     std::string dump() {
         std::stringstream ss;
-        
         ss << "rtcp ps feedback length:" << this->get_data_len();
         ss << ", sender ssrc:" << this->get_sender_ssrc();
         ss << ", media ssrc:" << this->get_media_ssrc() << "\r\n";
